@@ -2,45 +2,80 @@ import java.io.*;
 class TicTacToe {
     public static void main(String[] args) throws IOException{
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+        boolean playAgain = false;
+        System.out.println("Welcome to Tic-Tac-Toe!! Input the following:");
+        System.out.println("Player 1 Name:");
+        String p1n = br.readLine();
+        Player p1 = new Player();
+        p1.setName(p1n);
+        p1.setMove(Move.O);
+        System.out.println("Player 2 Name:");
+        String p2n = br.readLine();
+        Player p2 = new Player();
+        p2.setName(p2n);
+        p2.setMove(Move.X);
         int m;
         int n;
         int noOfMoves = 0;
-        Board b = new Board();
-        b.printBoard();
-        while(b.checkWinner(noOfMoves).equals("") && noOfMoves != 9) {
-            Move move = noOfMoves%2==0 ? Move.O : Move.X;
-            boolean inputValidity = true;
-            do {
-                System.out.println("Input two digit number to play your move, Player " + move);
-            
-                String playerInput = br.readLine();
-                inputValidity = isInputValid(playerInput);
-                if(inputValidity) {
-                    m = Integer.parseInt(String.valueOf(playerInput.charAt(0)));
-                    n = Integer.parseInt(String.valueOf(playerInput.charAt(1)));
-                    if(!b.enterMove(move, m, n)) {
-                        System.out.println("Spot already filled for " + m + "" + n +"!! Try Again Player " + move);
-                        inputValidity = false; 
-                    }
-                } else {
-                    System.out.println("Invalid Input!! Try Again, Player " + move);
-                }
-            } while(!inputValidity);
-
-            System.out.println("============");
-
+        do {
+            Board b = new Board();
+            System.out.println("Lets Start " + p1.getName() + " and " + p2.getName() + "!!");
             b.printBoard();
-            noOfMoves++;
-        }
+            Player winner = null;
+            while(winner == null && noOfMoves != 9) {
+                Player playing = noOfMoves%2==0 ? p1 : p2;
+                boolean moveValidity = true;
+                do {
+                    System.out.println("Input two digit number to play your move, " + playing.getName() + "| move->`" + playing.getMove() + "`");
+                
+                    String moveSpaceInput = br.readLine();
+                    moveValidity = isMoveValid(moveSpaceInput);
+                    if(moveValidity) {
+                        m = Integer.parseInt(String.valueOf(moveSpaceInput.charAt(0)));
+                        n = Integer.parseInt(String.valueOf(moveSpaceInput.charAt(1)));
+                        if(!b.enterMove(playing.getMove(), m, n)) {
+                            System.out.println("Spot already filled for " + m + "" + n +"!! Try Again " + playing.getName());
+                            moveValidity = false; 
+                        }
+                    } else {
+                        System.out.println("Invalid Input!! Try Again, " + playing.getName());
+                        b.printBoard();
+                    }
+                } while(!moveValidity);
+    
+                System.out.println("============");
+                winner = b.checkWinner(noOfMoves, p1, p2);
+    
+                b.printBoard();
+                noOfMoves++;
+            }
+    
+            if(winner != null) {
+                System.out.println("Winner is " + winner.getName());
+            } else {
+                System.out.println("Its a Tie..");
+            }
 
-        if(!b.checkWinner(noOfMoves).equals("")) {
-            System.out.println("Winner is " + b.checkWinner(noOfMoves));
-        } else {
-            System.out.println("Its a Tie..");
-        }
+            System.out.println("Do you want to play again?? Input 1 for Yes and anything else for No...");
+            String playAgainInput = br.readLine();
+            try {
+                int repeat = Integer.parseInt(playAgainInput);
+                if(repeat == 1) {
+                    playAgain = true;
+                    noOfMoves = 0;
+                    System.out.println("=======================");
+                } else {
+                    throw new Exception();
+                }
+            } catch(Exception e) {
+                System.out.println("Ending Game..");
+                playAgain = false;
+            }
+        }while(playAgain);
+        
     }
 
-    public static boolean isInputValid(String playerInput) {
+    public static boolean isMoveValid(String playerInput) {
         if(playerInput.length() != 2) {
             return false;
         }
@@ -63,7 +98,7 @@ enum Move {
 }
 
 class Board {
-    String[][] playBoard;
+    private String[][] playBoard;
 
     Board() {
         this.playBoard = new String[3][3];
@@ -94,29 +129,60 @@ class Board {
         }
     }
 
-    public String checkWinner(int noOfMoves) {
+    public Player checkWinner(int noOfMoves, Player p1, Player p2) {
         if(noOfMoves < 5) {
-            return "";
+            return null;
         }
 
         for(int i=0; i<3; i++) {
-            if(this.playBoard[i][0].equals(this.playBoard[i][1]) && this.playBoard[i][1].equals(this.playBoard[i][2])) { // for horizontal
-                return this.playBoard[i][0];
+            if(this.playBoard[i][0].equals(this.playBoard[i][1]) && this.playBoard[i][1].equals(this.playBoard[i][2])) {
+                return findWinningPlayer(this.playBoard[i][0].trim(), p1, p2);
             }
 
-            if(this.playBoard[0][i].equals(this.playBoard[1][i]) && this.playBoard[1][i].equals(this.playBoard[2][i])) { // for vertical
-                return this.playBoard[0][i];
+            if(this.playBoard[0][i].equals(this.playBoard[1][i]) && this.playBoard[1][i].equals(this.playBoard[2][i])) {
+                return findWinningPlayer(this.playBoard[0][i].trim(), p1, p2);
             }
         }
 
         if(this.playBoard[0][0].equals(this.playBoard[1][1]) && this.playBoard[1][1].equals(this.playBoard[2][2])) {
-            return this.playBoard[1][1];
+            return findWinningPlayer(this.playBoard[1][1].trim(), p1, p2);
         }
         
         if(this.playBoard[0][2].equals(this.playBoard[1][1]) && this.playBoard[1][1].equals(this.playBoard[2][0])) {
-            return this.playBoard[1][1];
+            return findWinningPlayer(this.playBoard[1][1].trim(), p1, p2);
         }
         
-        return "";
+        return null;
+    }
+
+    private Player findWinningPlayer(String winnerChar, Player p1, Player p2) {
+        if(p1.getMoveAsString().equals(winnerChar)) {
+            return p1;
+        } else {
+            return p2;
+        }
+    }
+}
+
+class Player {
+    private String name;
+    private Move move;
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public void setMove(Move move) {
+        this.move = move;
+    }
+
+    public String getName() {
+        return this.name;
+    }
+    public Move getMove() {
+        return this.move;
+    }
+    public String getMoveAsString() {
+        return String.valueOf(this.move);
     }
 }
