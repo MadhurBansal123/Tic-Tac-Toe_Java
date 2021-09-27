@@ -2,24 +2,16 @@ import java.io.*;
 class TicTacToe {
     public static void main(String[] args) throws IOException{
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
-        boolean playAgain = false;
         System.out.println("Welcome to Tic-Tac-Toe!! Input the following:");
         System.out.println("Player 1 Name:");
-        String p1n = br.readLine();
-        Player p1 = new Player();
-        p1.setName(p1n);
-        p1.setMove(Move.O);
+        Player p1 = new Player(br.readLine(), Move.O);
         System.out.println("Player 2 Name:");
-        String p2n = br.readLine();
-        Player p2 = new Player();
-        p2.setName(p2n);
-        p2.setMove(Move.X);
-        int m;
-        int n;
+        Player p2 = new Player(br.readLine(), Move.X);
         int noOfMoves = 0;
+        boolean playAgain;
         do {
             Board b = new Board();
-            System.out.println("Lets Start " + p1.getName() + " and " + p2.getName() + "!!");
+            System.out.println("Lets Start the Game" + p1.getName() + " and " + p2.getName() + "!!");
             b.printBoard();
             Player winner = null;
             while(winner == null && noOfMoves != 9) {
@@ -31,8 +23,8 @@ class TicTacToe {
                     String moveSpaceInput = br.readLine();
                     moveValidity = isMoveValid(moveSpaceInput);
                     if(moveValidity) {
-                        m = Integer.parseInt(String.valueOf(moveSpaceInput.charAt(0)));
-                        n = Integer.parseInt(String.valueOf(moveSpaceInput.charAt(1)));
+                        int m = Integer.parseInt(String.valueOf(moveSpaceInput.charAt(0)));
+                        int n = Integer.parseInt(String.valueOf(moveSpaceInput.charAt(1)));
                         if(!b.enterMove(playing.getMove(), m, n)) {
                             System.out.println("Spot already filled for " + m + "" + n +"!! Try Again " + playing.getName());
                             b.printBoard();
@@ -169,11 +161,8 @@ class Player {
     private String name;
     private Move move;
 
-    public void setName(String name) {
+    Player(String name, Move move) {
         this.name = name;
-    }
-
-    public void setMove(Move move) {
         this.move = move;
     }
 
