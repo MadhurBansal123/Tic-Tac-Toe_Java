@@ -1,5 +1,5 @@
 import java.io.*;
-class Main {
+class TicTacToe {
     public static void main(String[] args) throws IOException{
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
         int m;
@@ -36,7 +36,7 @@ class Main {
         if(!b.checkWinner(noOfMoves).equals("")) {
             System.out.println("Winner is " + b.checkWinner(noOfMoves));
         } else {
-            System.out.println();
+            System.out.println("Its a Tie..");
         }
     }
 
