@@ -35,6 +35,7 @@ class TicTacToe {
                         n = Integer.parseInt(String.valueOf(moveSpaceInput.charAt(1)));
                         if(!b.enterMove(playing.getMove(), m, n)) {
                             System.out.println("Spot already filled for " + m + "" + n +"!! Try Again " + playing.getName());
+                            b.printBoard();
                             moveValidity = false; 
                         }
                     } else {
