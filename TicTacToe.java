@@ -1,5 +1,5 @@
 import java.io.*;
-class TicTacToe {
+class TicTacToe {   
     public static void main(String[] args) throws IOException {
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
         System.out.println("Welcome to Tic-Tac-Toe!! Input the following:");
@@ -70,10 +70,7 @@ class Board {
     }
 
     public boolean enterMove(Move xo, int m, int n) {
-        if (m >= 3 || m < 0 || n >= 3 || n < 0) {
-            return false;
-        }
-        if (this.playBoard[m][n].equals(String.valueOf(Move.O).concat(" ")) || this.playBoard[m][n].equals(String.valueOf(Move.X).concat(" "))) {
+        if (this.playBoard[m][n].trim().equals(String.valueOf(Move.O)) || this.playBoard[m][n].trim().equals(String.valueOf(Move.X))) {
             return false;
         }
         this.playBoard[m][n] = String.valueOf(xo).concat(" ");
@@ -123,7 +120,7 @@ class Board {
         }
     }
 
-    public boolean isMoveValid(String playerInput) {
+    public boolean isMoveInputValid(String playerInput) {
         if (playerInput.length() != 2) {
             return false;
         }
@@ -167,7 +164,7 @@ class Player {
             System.out.println("Input two digit number to play your move, " + this.getName() + "| move->`" + this.getMove() + "`");
 
             String moveSpaceInput = br.readLine();
-            moveValidity = b.isMoveValid(moveSpaceInput);
+            moveValidity = b.isMoveInputValid(moveSpaceInput);
             if (moveValidity) {
                 int m = Integer.parseInt(String.valueOf(moveSpaceInput.charAt(0)));
                 int n = Integer.parseInt(String.valueOf(moveSpaceInput.charAt(1)));
