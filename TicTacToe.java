@@ -18,12 +18,11 @@ class TicTacToe {
                 Player playing = noOfMoves % 2 == 0 ? p1 : p2;
 
                 playing.takeTurn(b);
-
+                noOfMoves++;
                 System.out.println("============");
                 winner = b.checkWinner(noOfMoves, p1, p2);
 
                 b.printBoard();
-                noOfMoves++;
             }
 
             if (winner != null) {
