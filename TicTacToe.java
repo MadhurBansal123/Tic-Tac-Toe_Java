@@ -57,13 +57,13 @@ enum Move {
 }
 
 class Board {
-    private String[][] playBoard;
+    private final String[][] playBoard;
 
     Board() {
         this.playBoard = new String[3][3];
         for (int i = 0; i < 3; i++) {
             for (int j = 0; j < 3; j++) {
-                this.playBoard[i][j] = String.valueOf(i) + String.valueOf(j);
+                this.playBoard[i][j] = i + String.valueOf(j);
             }
         }
     }
@@ -138,7 +138,7 @@ class Board {
 }
 
 class Player {
-    private String name;
+    private final String name;
     private Move move;
 
     Player(String name, Move move) {
@@ -157,7 +157,7 @@ class Player {
     }
 
     public void takeTurn(Board b) throws IOException {
-        boolean moveValidity = true;
+        boolean moveValidity;
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
         do {
             System.out.println("Input two digit number to play your move, " + this.getName() + "| move->`" + this.getMove() + "`");
